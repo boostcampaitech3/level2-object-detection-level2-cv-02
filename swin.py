@@ -1,7 +1,9 @@
 from mmcv import Config
+from mmcv.runner import load_checkpoint
 from mmdet.models import build_detector
 from mmdet.apis import train_detector, single_gpu_test
 from mmdet.datasets import build_dataloader, build_dataset
+from mmcv.parallel import MMDataParallel
 from pycocotools.coco import COCO
 import os
 import pandas as pd
@@ -31,6 +33,11 @@ train_detector(model, datasets[0], cfg, distributed=False, validate=False)
 wandb.alert(title="Train Finished", text=f"{RUN_NAME}")
 
 # Prediction
+
+checkpoint_path = f"./latest.pth"
+model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
+checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')
+model = MMDataParallel(model.cuda(), device_ids=[0])
 
 data_loader = build_dataloader(
     datasets[1],

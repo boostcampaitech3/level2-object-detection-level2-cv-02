@@ -6,7 +6,7 @@
 # model settings
 model = dict(
     type='CascadeRCNN',
-    pretrained=None,
+    # pretrained=None, # Modified
     backbone=dict(
         type='SwinTransformer',
         embed_dim=96,
