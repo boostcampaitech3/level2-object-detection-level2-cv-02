@@ -11,7 +11,7 @@ import wandb
 
 # Init
 
-RUN_NAME = "SwinTransformer_Baseline"
+RUN_NAME = "SwinTransformer_Epochs50"
 
 wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
 
@@ -19,6 +19,7 @@ cfg = Config.fromfile('/opt/ml/detection/swin/configs/modified_swin_base.py')
 cfg.checkpoint_config = dict(max_keep_ckpts=10, interval=3)
 cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
 cfg.log_config.hooks[1].init_kwargs.name = RUN_NAME
+cfg.runner = dict(type='EpochBasedRunner', max_epochs=50)
 
 model = build_detector(cfg.model)
 
