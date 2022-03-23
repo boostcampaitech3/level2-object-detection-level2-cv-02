@@ -11,7 +11,7 @@ import wandb
 
 # Init
 
-RUN_NAME = "SwinTransformer_Pretrained"
+RUN_NAME = "SwinTransformer_Epochs36_54"
 
 wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
 
@@ -19,10 +19,15 @@ cfg = Config.fromfile('/opt/ml/detection/swin/configs/modified_swin_base.py')
 cfg.checkpoint_config = dict(max_keep_ckpts=50, interval=2)
 cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
 cfg.log_config.hooks[1].init_kwargs.name = RUN_NAME
-cfg.runner = dict(type='EpochBasedRunner', max_epochs=36)
+cfg.runner = dict(type='EpochBasedRunner', max_epochs=(54-36))
 
 model = build_detector(cfg.model)
-model.init_weights()
+
+#### Load Checkpoint ####
+# model.init_weights()
+checkpoint_path = f"./epoch_36.pth"
+checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')
+model = MMDataParallel(model.cuda(), device_ids=[0])
 
 datasets = [build_dataset(cfg.data.train), build_dataset(cfg.data.test)]
 
