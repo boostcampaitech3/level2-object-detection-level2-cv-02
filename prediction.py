@@ -14,7 +14,7 @@ RUN_NAME = "SwinTransformer_Epochs50"
 checkpoint_path = f"./epoch_30.pth"
 
 cfg = Config.fromfile('/opt/ml/detection/swin/configs/modified_swin_base.py')
-cfg.checkpoint_config = dict(max_keep_ckpts=10, interval=3)
+cfg.checkpoint_config = dict(max_keep_ckpts=50, interval=2)
 cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
 cfg.log_config.hooks[1].init_kwargs.name = RUN_NAME
 
