@@ -9,8 +9,10 @@ _base_ = [
 ]
 
 work_dir = '/opt/ml/detection/swin'
+pretrained = '/opt/ml/detection/swin/configs/cascade_mask_rcnn_swin_base_patch4_window7.pth'
 
 model = dict(
+    init_cfg=dict(type='Pretrained', checkpoint=pretrained), # Modified
     backbone=dict(
         embed_dim=128,
         depths=[2, 2, 18, 2],
@@ -128,13 +130,12 @@ img_norm_cfg = dict(
 # ]
 # data = dict(train=dict(pipeline=train_pipeline))
 
-optimizer = dict(_delete_=True, type='AdamW', lr=0.001, betas=(0.9, 0.999), weight_decay=0.05,
+optimizer = dict(_delete_=True, type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
                  paramwise_cfg=dict(custom_keys={'absolute_pos_embed': dict(decay_mult=0.),
                                                  'relative_position_bias_table': dict(decay_mult=0.),
                                                  'norm': dict(decay_mult=0.)}))
 # lr_config = dict(step=[27, 33]) # Modified
 # runner = dict(type='EpochBasedRunner', max_epochs=36) # Modified
-# load_from = "/opt/ml/detection/swin/configs/cascade_mask_rcnn_swin_base_patch4_window7.pth" # Modified
 
 # Modified All
 # do not use mmdet version fp16
