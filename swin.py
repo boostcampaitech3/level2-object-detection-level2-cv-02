@@ -42,7 +42,7 @@ model = MMDataParallel(model.cuda(), device_ids=[0])
 
 data_loader = build_dataloader(
     datasets[1],
-    samples_per_gpu=1,
+    samples_per_gpu=cfg.data.samples_per_gpu,
     workers_per_gpu=cfg.data.workers_per_gpu,
     dist=False,
     shuffle=False

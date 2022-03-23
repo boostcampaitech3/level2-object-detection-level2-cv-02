@@ -33,8 +33,8 @@ test_pipeline = [
 classes = ("General trash", "Paper", "Paper pack", "Metal", "Glass", # Modified
            "Plastic", "Styrofoam", "Plastic bag", "Battery", "Clothing") # Modified
 data = dict(
-    samples_per_gpu=4, # Modified
-    workers_per_gpu=4, # Modified
+    samples_per_gpu=8, # Modified
+    workers_per_gpu=2, # Modified
     train=dict(
         type=dataset_type,
         classes=classes, # Modified
