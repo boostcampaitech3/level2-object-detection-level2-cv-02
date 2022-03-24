@@ -20,7 +20,7 @@ cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
 cfg.log_config.hooks[1].init_kwargs.name = RUN_NAME
 cfg.runner = dict(type='EpochBasedRunner', max_epochs=60)
 
-cfg.model.neck = [cfg.model.neck, dict(type='DyHead', in_channels=256, out_channels=256, stacked_convs=6)]
+cfg.model.neck = [cfg.model.neck, dict(type='DyHead', in_channels=256, out_channels=256)]
 
 model = build_detector(cfg.model)
 model.init_weights()
