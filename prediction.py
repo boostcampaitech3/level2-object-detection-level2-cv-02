@@ -1,11 +1,10 @@
 from mmcv import Config
 from mmcv.runner import load_checkpoint
 from mmdet.models import build_detector
-from mmdet.apis import train_detector, single_gpu_test
+from mmdet.apis import single_gpu_test
 from mmdet.datasets import build_dataloader, build_dataset
 from mmcv.parallel import MMDataParallel
 from pycocotools.coco import COCO
-import os
 import pandas as pd
 
 # Prediction
