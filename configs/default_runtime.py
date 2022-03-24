@@ -10,7 +10,8 @@ log_config = dict(
         dict(type='WandbLoggerHook', # Modified
             interval=100, # Modified
             init_kwargs=dict(project='trash_detection_nestiank', # Modified
-                entity='bucket_interior') # Modified
+                entity='bucket_interior'), # Modified
+            log_artifact=False # Modified
         ) # Modified
     ]) # Modified
 # yapf:enable
