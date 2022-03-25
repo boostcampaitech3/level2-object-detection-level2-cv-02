@@ -17,6 +17,8 @@ cfg.checkpoint_config = dict(max_keep_ckpts=50, interval=2)
 cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
 cfg.log_config.hooks[1].init_kwargs.name = RUN_NAME
 
+cfg.model.neck = [cfg.model.neck, dict(type='DyHead', in_channels=256, out_channels=256)]
+
 model = build_detector(cfg.model)
 
 dataset = build_dataset(cfg.data.test)
