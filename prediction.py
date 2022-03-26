@@ -6,11 +6,18 @@ from mmdet.datasets import build_dataloader, build_dataset
 from mmcv.parallel import MMDataParallel
 from pycocotools.coco import COCO
 import pandas as pd
+import argparse
+
+# Init
+
+parser = argparse.ArgumentParser()
+parser.add_argument('epoch', type=int)
+args = parser.parse_args()
 
 # Prediction
 
 RUN_NAME = "SwinTransformer_DyHead_Epochs60"
-checkpoint_path = f"./epoch_60.pth"
+checkpoint_path = f"./epoch_{args.epoch}.pth"
 
 cfg = Config.fromfile('/opt/ml/detection/swin/configs/modified_swin_base.py')
 cfg.checkpoint_config = dict(max_keep_ckpts=50, interval=2)
@@ -56,4 +63,4 @@ for i, out in enumerate(output):
 submission = pd.DataFrame()
 submission['PredictionString'] = prediction_strings
 submission['image_id'] = file_names
-submission.to_csv(f"./epoch60.csv", index=None)
+submission.to_csv(f"./epoch{args.epoch}.csv", index=None)
