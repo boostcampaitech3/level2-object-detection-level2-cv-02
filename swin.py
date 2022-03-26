@@ -8,6 +8,11 @@ from pycocotools.coco import COCO
 import pandas as pd
 import wandb
 
+# Experimental Hotfix
+
+import os
+os.environ["WANDB_START_METHOD"] = "thread"
+
 # Init
 
 RUN_NAME = "SwinTransformer_DyHead_Epochs60"
