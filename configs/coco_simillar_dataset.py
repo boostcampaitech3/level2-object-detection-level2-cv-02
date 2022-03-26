@@ -55,4 +55,4 @@ data = dict(
         img_prefix=data_root, # Modified
         pipeline=test_pipeline, # Modified
         test_mode=True)) # Modified
-# evaluation = dict(interval=1, metric='bbox') # Modified
+# evaluation = dict(metric='bbox', classwise=True) # Modified
