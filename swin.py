@@ -1,3 +1,9 @@
+#
+# boostcamp AI Tech
+# Trash Object Detection Competition
+#
+
+
 from mmcv import Config
 from mmcv.runner import load_checkpoint
 from mmdet.models import build_detector
@@ -5,76 +11,93 @@ from mmdet.apis import train_detector, single_gpu_test
 from mmdet.datasets import build_dataloader, build_dataset
 from mmcv.parallel import MMDataParallel
 from pycocotools.coco import COCO
+
+import os
 import pandas as pd
 import wandb
 
-# Experimental Hotfix
 
-import os
-os.environ["WANDB_START_METHOD"] = "thread"
+def get_cfg(loc: str, run: str, epochs: int):
+    cfg = Config.fromfile(loc)
+    cfg.checkpoint_config = dict(max_keep_ckpts=100, interval=2)
+    cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
+    cfg.log_config.hooks[1].init_kwargs.name = run
+    cfg.runner = dict(type='EpochBasedRunner', max_epochs=epochs)
+    return cfg
 
-# Init
 
-RUN_NAME = "SwinTransformer_DyHead_Epochs60"
+def make_predictions(output, cfg, loc: str):
+    prediction_strings = []
+    file_names = []
 
-wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
+    coco = COCO(cfg.data.test.ann_file)
 
-cfg = Config.fromfile('/opt/ml/detection/swin/configs/modified_swin_base.py')
-cfg.checkpoint_config = dict(max_keep_ckpts=50, interval=2)
-cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
-cfg.log_config.hooks[1].init_kwargs.name = RUN_NAME
-cfg.runner = dict(type='EpochBasedRunner', max_epochs=60)
+    for i, out in enumerate(output):
+        prediction_string = ''
+        image_info = coco.loadImgs(coco.getImgIds(imgIds=i))[0]
+        for j in range(10):
+            for o in out[j]:
+                prediction_string += str(j) + ' ' + str(o[4]) + ' ' + str(o[0]) + ' ' + str(o[1]) + ' ' + str(o[2]) + ' ' + str(o[3]) + ' '
 
-cfg.model.neck = [cfg.model.neck, dict(type='DyHead', in_channels=256, out_channels=256)]
+        prediction_strings.append(prediction_string)
+        file_names.append(image_info['file_name'])
 
-model = build_detector(cfg.model)
-model.init_weights()
+    submission = pd.DataFrame()
+    submission['PredictionString'] = prediction_strings
+    submission['image_id'] = file_names
+    submission.to_csv(loc, index=None)
 
-datasets = [build_dataset(cfg.data.train), build_dataset(cfg.data.test)]
 
-# Train
+if __name__ == '__main__':
+    # Experimental Hotfix
+    os.environ["WANDB_START_METHOD"] = "thread"
 
-wandb.alert(title="Train Started", text=f"{RUN_NAME}")
+    # Init
+    RUN_NAME = "SwinTransformer_HeavyAugs1"
+    EPOCHS = 54
 
-train_detector(model, datasets[0], cfg, distributed=False, validate=False)
+    wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
 
-wandb.alert(title="Train Finished", text=f"{RUN_NAME}")
+    cfg = get_cfg('/opt/ml/detection/swin/configs/modified_swin_base.py', RUN_NAME, EPOCHS)
 
-# Prediction
+    model = build_detector(cfg.model)
+    model.init_weights()
 
-checkpoint_path = f"./latest.pth"
-model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
-checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')
-model = MMDataParallel(model.cuda(), device_ids=[0])
+    datasets = [build_dataset(cfg.data.train), build_dataset(cfg.data.test)]
 
-data_loader = build_dataloader(
-    datasets[1],
-    samples_per_gpu=cfg.data.samples_per_gpu,
-    workers_per_gpu=cfg.data.workers_per_gpu,
-    dist=False,
-    shuffle=False
-)
-output = single_gpu_test(model, data_loader, show_score_thr=0.05)
+    # Train
+    wandb.alert(title="Train Started", text=f"{RUN_NAME}")
+    train_detector(model, datasets[0], cfg, distributed=False, validate=False)
+    wandb.alert(title="Train Finished", text=f"{RUN_NAME}")
 
-prediction_strings = []
-file_names = []
+    # Prediction: Normal Threshold
+    checkpoint_path = f"./epoch_{EPOCHS}.pth"
 
-coco = COCO(cfg.data.test.ann_file)
-img_ids = coco.getImgIds()
+    model = build_detector(cfg.model)
+    checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')
+    model = MMDataParallel(model.cuda(), device_ids=[0])
 
-for i, out in enumerate(output):
-    prediction_string = ''
-    image_info = coco.loadImgs(coco.getImgIds(imgIds=i))[0]
-    for j in range(10):
-        for o in out[j]:
-            prediction_string += str(j) + ' ' + str(o[4]) + ' ' + str(o[0]) + ' ' + str(o[1]) + ' ' + str(o[2]) + ' ' + str(o[3]) + ' '
+    data_loader = build_dataloader(
+        datasets[1],
+        samples_per_gpu=cfg.data.samples_per_gpu,
+        workers_per_gpu=cfg.data.workers_per_gpu,
+        dist=False,
+        shuffle=False
+    )
 
-    prediction_strings.append(prediction_string)
-    file_names.append(image_info['file_name'])
+    output = single_gpu_test(model, data_loader, show_score_thr=0.05)
 
-submission = pd.DataFrame()
-submission['PredictionString'] = prediction_strings
-submission['image_id'] = file_names
-submission.to_csv(f"./{RUN_NAME}.csv", index=None)
+    make_predictions(output, cfg, f"./epoch{EPOCHS}.csv")
 
-wandb.alert(title="Prediction Finished", text=f"{RUN_NAME}")
+    # Prediction: Low Threshold
+    cfg = get_cfg('/opt/ml/detection/swin/configs/thr_down/modified_swin_base_thr_down.py', RUN_NAME, EPOCHS)
+
+    model = build_detector(cfg.model)
+    checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')
+    model = MMDataParallel(model.cuda(), device_ids=[0])
+
+    output = single_gpu_test(model, data_loader, show_score_thr=0.01)
+
+    make_predictions(output, cfg, f"./epoch{EPOCHS}_thr_down.csv")
+
+    wandb.alert(title="Prediction Finished", text=f"{RUN_NAME}")
