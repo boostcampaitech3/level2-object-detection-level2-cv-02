@@ -7,13 +7,13 @@ log_config = dict(
     interval=50,
     hooks=[
         dict(type='TextLoggerHook'),
-        dict(type='WandbLoggerHook', # Modified
-            interval=100, # Modified
-            init_kwargs=dict(project='trash_detection_nestiank', # Modified
-                entity='bucket_interior'), # Modified
-            log_artifact=False # Modified
-        ) # Modified
-    ]) # Modified
+        dict(type='WandbLoggerHook',
+            interval=100,
+            init_kwargs=dict(project='trash_detection_nestiank',
+                entity='bucket_interior'),
+            log_artifact=False
+        )
+    ])
 # yapf:enable
 custom_hooks = [dict(type='NumClassCheckHook')]
 

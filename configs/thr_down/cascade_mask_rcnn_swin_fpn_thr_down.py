@@ -6,7 +6,6 @@
 # model settings
 model = dict(
     type='CascadeRCNN',
-    # pretrained=None, # Modified
     backbone=dict(
         type='SwinTransformer',
         embed_dim=96,
@@ -59,7 +58,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=10, # Modified
+                num_classes=10,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -76,7 +75,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=10, # Modified
+                num_classes=10,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -93,7 +92,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=10, # Modified
+                num_classes=10,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -104,22 +103,7 @@ model = dict(
                     use_sigmoid=False,
                     loss_weight=1.0),
                 loss_bbox=dict(type='SmoothL1Loss', beta=1.0, loss_weight=1.0))
-        ]), # Modified
-        # Modified All
-        # mask_roi_extractor=dict(
-        #     type='SingleRoIExtractor',
-        #     roi_layer=dict(type='RoIAlign', output_size=14, sampling_ratio=0),
-        #     out_channels=256,
-        #     featmap_strides=[4, 8, 16, 32]),
-        # mask_head=dict(
-        #     type='FCNMaskHead',
-        #     num_convs=4,
-        #     in_channels=256,
-        #     conv_out_channels=256,
-        #     num_classes=10, # Modified
-        #     loss_mask=dict(
-        #         type='CrossEntropyLoss', use_mask=True, loss_weight=1.0))),
-    # model training and testing settings
+        ]),
     train_cfg = dict(
         rpn=dict(
             assigner=dict(
@@ -160,7 +144,6 @@ model = dict(
                     pos_fraction=0.25,
                     neg_pos_ub=-1,
                     add_gt_as_proposals=True),
-                # mask_size=28, # Modified
                 pos_weight=-1,
                 debug=False),
             dict(
@@ -177,7 +160,6 @@ model = dict(
                     pos_fraction=0.25,
                     neg_pos_ub=-1,
                     add_gt_as_proposals=True),
-                # mask_size=28, # Modified
                 pos_weight=-1,
                 debug=False),
             dict(
@@ -194,7 +176,6 @@ model = dict(
                     pos_fraction=0.25,
                     neg_pos_ub=-1,
                     add_gt_as_proposals=True),
-                # mask_size=28, # Modified
                 pos_weight=-1,
                 debug=False)
         ]),
@@ -204,10 +185,9 @@ model = dict(
             nms_pre=1000,
             nms_post=1000,
             max_per_img=1000,
-            nms=dict(type='nms', iou_threshold=0.5), # Modified
+            nms=dict(type='nms', iou_threshold=0.5),
             min_bbox_size=0),
         rcnn=dict(
-            score_thr=0.01, # Modified
+            score_thr=0.01,
             nms=dict(type='nms', iou_threshold=0.5),
-            max_per_img=1000))) # Modified
-            # mask_thr_binary=0.5))) # Modified
+            max_per_img=1000)))
