@@ -4,7 +4,6 @@
 #
 
 
-from mmcv import Config
 from mmcv.runner import load_checkpoint
 from mmdet.models import build_detector
 from mmdet.apis import train_detector, single_gpu_test
