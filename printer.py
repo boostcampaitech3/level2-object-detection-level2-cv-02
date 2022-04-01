@@ -6,7 +6,9 @@
 
 from mmcv import Config
 
+from options import CONFIG_PATH
+
 
 if __name__ == '__main__':
-    cfg = Config.fromfile('/opt/ml/detection/swin/configs/modified_swin_base.py')
+    cfg = Config.fromfile(CONFIG_PATH)
     print(cfg.pretty_text)

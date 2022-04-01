@@ -15,7 +15,7 @@ from pycocotools.coco import COCO
 import pandas as pd
 import argparse
 
-from options import RUN_NAME
+from options import RUN_NAME, CONFIG_PATH, CONFIG_PATH_LOW_THR
 
 
 def get_cfg(loc: str, run: str):
@@ -52,12 +52,16 @@ if __name__ == '__main__':
     # Init
     parser = argparse.ArgumentParser()
     parser.add_argument('epoch', type=int)
+    parser.add_argument('thr_down', default=False, type=bool)
     args = parser.parse_args()
 
     # Prediction
     checkpoint_path = f"./epoch_{args.epoch}.pth"
 
-    cfg = get_cfg('/opt/ml/detection/swin/configs/modified_swin_base.py', RUN_NAME)
+    if args.thr_down:
+        cfg = get_cfg(CONFIG_PATH_LOW_THR, RUN_NAME)
+    else:
+        cfg = get_cfg(CONFIG_PATH, RUN_NAME)
 
     model = build_detector(cfg.model)
 
@@ -75,6 +79,9 @@ if __name__ == '__main__':
 
     model = MMDataParallel(model.cuda(), device_ids=[0])
 
-    output = single_gpu_test(model, data_loader, show_score_thr=0.05)
+    if args.thr_down:
+        output = single_gpu_test(model, data_loader, show_score_thr=0.01)
+    else:
+        output = single_gpu_test(model, data_loader, show_score_thr=0.05)
 
     make_predictions(output, cfg, f"./epoch{args.epoch}.csv")

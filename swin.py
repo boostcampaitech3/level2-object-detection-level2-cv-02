@@ -16,7 +16,7 @@ import os
 import pandas as pd
 import wandb
 
-from options import RUN_NAME
+from options import RUN_NAME, CONFIG_PATH, CONFIG_PATH_LOW_THR
 
 
 def get_cfg(loc: str, run: str, epochs: int):
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
 
-    cfg = get_cfg('/opt/ml/detection/swin/configs/heavy_augs/modified_swin_base_heavy_augs.py', RUN_NAME, EPOCHS)
+    cfg = get_cfg(CONFIG_PATH, RUN_NAME, EPOCHS)
 
     model = build_detector(cfg.model)
     model.init_weights()
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     make_predictions(output, cfg, f"./epoch{EPOCHS}.csv")
 
     # Prediction: Low Threshold
-    cfg = get_cfg('/opt/ml/detection/swin/configs/thr_down/modified_swin_base_heavy_augs_thr_down.py', RUN_NAME, EPOCHS)
+    cfg = get_cfg(CONFIG_PATH_LOW_THR, RUN_NAME, EPOCHS)
 
     model = build_detector(cfg.model)
     checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')
