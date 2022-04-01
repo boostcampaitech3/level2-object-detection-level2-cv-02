@@ -68,7 +68,6 @@ if __name__ == '__main__':
     # Train
     wandb.alert(title="Train Started", text=f"{RUN_NAME}")
     train_detector(model, datasets[0], cfg, distributed=False, validate=False)
-    wandb.alert(title="Train Finished", text=f"{RUN_NAME}")
 
     # Prediction: Normal Threshold
     checkpoint_path = f"./epoch_{EPOCHS}.pth"
@@ -99,5 +98,3 @@ if __name__ == '__main__':
     output = single_gpu_test(model, data_loader, show_score_thr=0.01)
 
     make_predictions(output, cfg, f"./epoch{EPOCHS}_thr_down.csv")
-
-    wandb.alert(title="Prediction Finished", text=f"{RUN_NAME}")
