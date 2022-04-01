@@ -16,6 +16,8 @@ import os
 import pandas as pd
 import wandb
 
+from options import RUN_NAME
+
 
 def get_cfg(loc: str, run: str, epochs: int):
     cfg = Config.fromfile(loc)
@@ -53,8 +55,7 @@ if __name__ == '__main__':
     os.environ["WANDB_START_METHOD"] = "thread"
 
     # Init
-    RUN_NAME = "SwinTransformer_HeavyAugs1"
-    EPOCHS = 54
+    EPOCHS = 42
 
     wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
 

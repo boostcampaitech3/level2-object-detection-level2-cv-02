@@ -11,8 +11,11 @@ from mmdet.apis import single_gpu_test
 from mmdet.datasets import build_dataloader, build_dataset
 from mmcv.parallel import MMDataParallel
 from pycocotools.coco import COCO
+
 import pandas as pd
 import argparse
+
+from options import RUN_NAME
 
 
 def get_cfg(loc: str, run: str):
@@ -52,7 +55,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Prediction
-    RUN_NAME = "SwinTransformer_HeavyAugs1"
     checkpoint_path = f"./epoch_{args.epoch}.pth"
 
     cfg = get_cfg('/opt/ml/detection/swin/configs/thr_down/modified_swin_base_thr_down.py', RUN_NAME)
