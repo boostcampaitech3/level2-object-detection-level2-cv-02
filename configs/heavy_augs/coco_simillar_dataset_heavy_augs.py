@@ -6,7 +6,8 @@ data_root = '/opt/ml/detection/dataset/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
-    # RandomCrop, RandomFlip, PhotoMetricDistortion, Corrupt, CutOut
+    # RandomCrop, RandomFlip, PhotoMetricDistortion, Corrupt
+    # Removed: CutOut
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', img_scale=(512, 512), keep_ratio=True),
@@ -15,7 +16,7 @@ train_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
     dict(type='PhotoMetricDistortion'),
     dict(type='Corrupt', corruption='gaussian_noise', severity=1),
-    dict(type='CutOut', n_holes=1, cutout_ratio=[(0.1, 0.1), (0.15, 0.1), (0.1, 0.15), (0.15, 0.15)]),
+    # dict(type='CutOut', n_holes=1, cutout_ratio=[(0.1, 0.1), (0.15, 0.1), (0.1, 0.15), (0.15, 0.15)]),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
