@@ -20,13 +20,15 @@ if __name__ == '__main__':
     # Init
     parser = argparse.ArgumentParser()
     parser.add_argument('epoch', type=int)
-    parser.add_argument('thr_down', default=False, type=bool)
+    parser.add_argument('thr_down', type=str)
     args = parser.parse_args()
 
-    if args.thr_down:
+    if args.thr_down == 'True':
         cfg = get_cfg(CONFIG_PATH_LOW_THR, RUN_NAME, args.epoch)
-    else:
+    elif args.thr_down == 'False':
         cfg = get_cfg(CONFIG_PATH, RUN_NAME, args.epoch)
+    else:
+        raise AssertionError('You should give either True or False for thr_down argument.')
 
     dataset = build_dataset(cfg.data.test)
 
@@ -45,9 +47,9 @@ if __name__ == '__main__':
         shuffle=False
     )
 
-    if args.thr_down:
+    if args.thr_down == 'True':
         output = single_gpu_test(model, data_loader, show_score_thr=0.01)
-    else:
+    elif args.thr_down == 'False':
         output = single_gpu_test(model, data_loader, show_score_thr=0.05)
 
     make_predictions(output, cfg, f"./epoch{args.epoch}.csv")
