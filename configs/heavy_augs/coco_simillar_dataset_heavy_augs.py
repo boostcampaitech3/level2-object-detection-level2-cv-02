@@ -25,11 +25,12 @@ test_pipeline = [
         img_scale=(512, 512),
         flip=False,
         transforms=[
-            # RandomFlip, PhotoMetricDistortion
+            # RandomFlip
+            # Removed: PhotoMetricDistortion
             dict(type='Resize', keep_ratio=True),
             dict(type='RandomFlip', flip_ratio=[0.25, 0.25, 0.25], direction=['horizontal', 'vertical', 'diagonal']),
             dict(type='Normalize', **img_norm_cfg),
-            dict(type='PhotoMetricDistortion'),
+            # dict(type='PhotoMetricDistortion'),
             dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img']),
         ])
