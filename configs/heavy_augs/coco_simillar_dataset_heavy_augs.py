@@ -5,7 +5,7 @@ dataset_type = 'CocoDataset'
 data_root = '/opt/ml/detection/dataset/'
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=False)
 train_pipeline = [
-    # RandomCrop, RandomFlip, PhotoMetricDistortion, Corrupt
+    # RandomCrop, RandomFlip, PhotoMetricDistortion
     # Removed: CutOut
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
@@ -14,7 +14,6 @@ train_pipeline = [
     dict(type='RandomFlip', flip_ratio=[0.25, 0.25, 0.25], direction=['horizontal', 'vertical', 'diagonal']),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='PhotoMetricDistortion'),
-    dict(type='Corrupt', corruption='gaussian_noise', severity=1),
     # dict(type='CutOut', n_holes=1, cutout_ratio=[(0.1, 0.1), (0.15, 0.1), (0.1, 0.15), (0.15, 0.15)]),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
@@ -26,12 +25,11 @@ test_pipeline = [
         img_scale=(512, 512),
         flip=False,
         transforms=[
-            # RandomFlip, PhotoMetricDistortion, Corrupt
+            # RandomFlip, PhotoMetricDistortion
             dict(type='Resize', keep_ratio=True),
             dict(type='RandomFlip', flip_ratio=[0.25, 0.25, 0.25], direction=['horizontal', 'vertical', 'diagonal']),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='PhotoMetricDistortion'),
-            dict(type='Corrupt', corruption='gaussian_noise', severity=1),
             dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img']),
         ])
