@@ -18,14 +18,28 @@ from options import get_cfg, make_predictions
 
 if __name__ == '__main__':
     # Init
-    EPOCHS = 42
+    BASE_EPOCHS = 42
+    EPOCHS = 80 - 42
+
+    assert BASE_EPOCHS > EPOCHS, "The original checkpoint will be overwritten."
 
     wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
 
     cfg = get_cfg(CONFIG_PATH, RUN_NAME, EPOCHS)
 
     model = build_detector(cfg.model)
-    model.init_weights()
+    if BASE_EPOCHS == 0:
+        # Learning from the pretrained weights
+        model.init_weights()
+    else:
+        # Learning from the checkpoint
+        assert BASE_EPOCHS > cfg.lr_config.step[1], "Learning rate should be considered carefully."
+        cfg.optimizer.lr = 1e-6
+        cfg.lr_config = None
+
+        checkpoint_path = f"./epoch_{BASE_EPOCHS}.pth"
+        checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')
+        model = MMDataParallel(model.cuda(), device_ids=[0])
 
     datasets = [build_dataset(cfg.data.train), build_dataset(cfg.data.test)]
 
@@ -50,7 +64,7 @@ if __name__ == '__main__':
 
     output = single_gpu_test(model, data_loader, show_score_thr=0.05)
 
-    make_predictions(output, cfg, f"./epoch{EPOCHS}.csv")
+    make_predictions(output, cfg, f"./epoch{EPOCHS + BASE_EPOCHS}.csv")
 
     # Prediction: Low Threshold
     cfg = get_cfg(CONFIG_PATH_LOW_THR, RUN_NAME, EPOCHS)
@@ -61,4 +75,4 @@ if __name__ == '__main__':
 
     output = single_gpu_test(model, data_loader, show_score_thr=0.01)
 
-    make_predictions(output, cfg, f"./epoch{EPOCHS}_thr_down.csv")
+    make_predictions(output, cfg, f"./epoch{EPOCHS + BASE_EPOCHS}_thr_down.csv")

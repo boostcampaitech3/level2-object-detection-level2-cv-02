@@ -1,7 +1,7 @@
 # Modified from
 # https://github.com/SwinTransformer/Swin-Transformer-Object-Detection/blob/master/configs/_base_/default_runtime.py
 
-checkpoint_config = dict(interval=1)
+checkpoint_config = dict(max_keep_ckpts=100, interval=2)
 # yapf:disable
 log_config = dict(
     interval=50,
