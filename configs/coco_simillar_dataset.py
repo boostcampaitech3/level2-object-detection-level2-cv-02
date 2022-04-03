@@ -20,6 +20,7 @@ test_pipeline = [
         img_scale=(1024, 1024),
         flip=False,
         transforms=[
+            dict(type='Resize', keep_ratio=True),
             dict(type='RandomFlip'),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='ImageToTensor', keys=['img']),

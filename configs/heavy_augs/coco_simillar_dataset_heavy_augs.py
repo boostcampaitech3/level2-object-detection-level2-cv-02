@@ -27,6 +27,7 @@ test_pipeline = [
         transforms=[
             # RandomFlip
             # Removed: PhotoMetricDistortion
+            dict(type='Resize', keep_ratio=True),
             dict(type='RandomFlip', flip_ratio=[0.25, 0.25, 0.25], direction=['horizontal', 'vertical', 'diagonal']),
             dict(type='Normalize', **img_norm_cfg),
             # dict(type='PhotoMetricDistortion'),
