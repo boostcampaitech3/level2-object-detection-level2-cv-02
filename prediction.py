@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     if args.thr_down == 'True':
         output = single_gpu_test(model, data_loader, show_score_thr=0.01)
+        make_predictions(output, cfg, f"./epoch{args.epoch}_thr_down.csv")
     elif args.thr_down == 'False':
         output = single_gpu_test(model, data_loader, show_score_thr=0.05)
-
-    make_predictions(output, cfg, f"./epoch{args.epoch}.csv")
+        make_predictions(output, cfg, f"./epoch{args.epoch}.csv")
