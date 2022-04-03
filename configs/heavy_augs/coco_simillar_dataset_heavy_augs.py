@@ -23,7 +23,7 @@ test_pipeline = [
     dict(
         type='MultiScaleFlipAug',
         img_scale=(1024, 1024),
-        flip=False,
+        flip=True,
         transforms=[
             # RandomFlip
             # Removed: PhotoMetricDistortion
