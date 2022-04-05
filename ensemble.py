@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 boxes, scores, labels = weighted_boxes_fusion(boxes_list, scores_list, labels_list)
 
             for box, score, label in zip(boxes, scores, labels):
-                prediction_string += str(label) + ' ' + str(score) + ' ' + str(box[0] * image_info['width']) + ' ' + str(box[1] * image_info['height']) + ' ' + str(box[2] * image_info['width']) + ' ' + str(box[3] * image_info['height']) + ' '
+                prediction_string += str(int(label)) + ' ' + str(score) + ' ' + str(box[0] * image_info['width']) + ' ' + str(box[1] * image_info['height']) + ' ' + str(box[2] * image_info['width']) + ' ' + str(box[3] * image_info['height']) + ' '
 
         prediction_strings.append(prediction_string)
         file_names.append(image_id)
@@ -74,4 +74,4 @@ if __name__ == '__main__':
     submission = pd.DataFrame()
     submission['PredictionString'] = prediction_strings
     submission['image_id'] = file_names
-    submission.to_csv(f"./ensemble_{args.ensemble}.csv")
+    submission.to_csv(f"./ensemble_{args.ensemble}.csv", index=False)

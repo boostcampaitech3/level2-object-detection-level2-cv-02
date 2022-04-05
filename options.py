@@ -40,4 +40,4 @@ def make_predictions(output, cfg, loc: str):
     submission = pd.DataFrame()
     submission['PredictionString'] = prediction_strings
     submission['image_id'] = file_names
-    submission.to_csv(loc, index=None)
+    submission.to_csv(loc, index=False)
