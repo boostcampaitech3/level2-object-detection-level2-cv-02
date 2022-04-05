@@ -1,16 +1,25 @@
-from pycocotools.coco import COCO
+#
+# boostcamp AI Tech
+# Trash Object Detection Competition
+#
 
+from pycocotools.coco import COCO
 import pandas as pd
 import numpy as np
+
+import argparse
 
 from ensemble_boxes import *
 
 
-ensemble = 'nms'
-# ensemble = 'wbf'
-
 if __name__ == '__main__':
-    assert ensemble == 'nms' or ensemble == 'wbf', 'Ensemble type should be either NMS or WBF.'
+    # Init
+    parser = argparse.ArgumentParser()
+    parser.add_argument('ensemble', type=str)
+    args = parser.parse_args()
+
+    # Ensemble
+    assert args.ensemble == 'NMS' or args.ensemble == 'WBF', 'Ensemble type should be either NMS or WBF.'
 
     files = ['./output1.csv', './output2.csv']
     dataframes = [pd.read_csv(file) for file in files]
@@ -51,9 +60,9 @@ if __name__ == '__main__':
             labels_list.append(list(map(int, predict_list[:, 0].tolist())))
 
         if len(boxes_list):
-            if ensemble == 'nms':
+            if args.ensemble == 'NMS':
                 boxes, scores, labels = nms(boxes_list, scores_list, labels_list)
-            elif ensemble == 'wbf':
+            elif args.ensemble == 'WBF':
                 boxes, scores, labels = weighted_boxes_fusion(boxes_list, scores_list, labels_list)
 
             for box, score, label in zip(boxes, scores, labels):
@@ -65,4 +74,4 @@ if __name__ == '__main__':
     submission = pd.DataFrame()
     submission['PredictionString'] = prediction_strings
     submission['image_id'] = file_names
-    submission.to_csv(f"./ensemble_{ensemble}.csv")
+    submission.to_csv(f"./ensemble_{args.ensemble}.csv")
