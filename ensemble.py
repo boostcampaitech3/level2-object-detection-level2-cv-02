@@ -19,7 +19,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Ensemble
-    assert args.ensemble == 'NMS' or args.ensemble == 'WBF', 'Ensemble type should be either NMS or WBF.'
+    assert args.ensemble == 'NMS' or args.ensemble == 'SoftNMS' or args.ensemble == 'WBF', \
+        'Ensemble type should be either NMS, SoftNMS or WBF.'
 
     files = ['./output1.csv', './output2.csv']
     dataframes = [pd.read_csv(file) for file in files]
@@ -62,6 +63,8 @@ if __name__ == '__main__':
         if len(boxes_list):
             if args.ensemble == 'NMS':
                 boxes, scores, labels = nms(boxes_list, scores_list, labels_list)
+            elif args.ensemble == 'SoftNMS':
+                boxes, scores, labels = soft_nms(boxes_list, scores_list, labels_list)
             elif args.ensemble == 'WBF':
                 boxes, scores, labels = weighted_boxes_fusion(boxes_list, scores_list, labels_list)
 
