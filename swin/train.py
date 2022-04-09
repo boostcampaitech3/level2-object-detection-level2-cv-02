@@ -12,20 +12,20 @@ from mmcv.parallel import MMDataParallel
 
 import wandb
 
-from options import RUN_NAME, CONFIG_PATH, CONFIG_PATH_LOW_THR
-from options import get_cfg, make_predictions
+from options import WANDB_RUN, CONFIG_PATH, CONFIG_PATH_LOW_THR
+from options import wandb_init, get_cfg, make_predictions
 
+
+BASE_EPOCHS = 0
+EPOCHS = 42 - BASE_EPOCHS
 
 if __name__ == '__main__':
     # Init
-    BASE_EPOCHS = 0
-    EPOCHS = 42 - BASE_EPOCHS
-
     assert BASE_EPOCHS > EPOCHS, "The original checkpoint will be overwritten."
 
-    wandb.init(project="trash_detection_nestiank", entity="bucket_interior", name=RUN_NAME)
+    wandb_init()
 
-    cfg = get_cfg(CONFIG_PATH, RUN_NAME, EPOCHS)
+    cfg = get_cfg(CONFIG_PATH, EPOCHS)
 
     model = build_detector(cfg.model)
     if BASE_EPOCHS == 0:
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     datasets = [build_dataset(cfg.data.train), build_dataset(cfg.data.test)]
 
     # Train
-    wandb.alert(title="Train Started", text=f"{RUN_NAME}")
+    wandb.alert(title="Train Started", text=f"{WANDB_RUN}")
     train_detector(model, datasets[0], cfg, distributed=False, validate=False)
 
     # Prediction: Normal Threshold
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     make_predictions(output, cfg, f"./epoch{EPOCHS + BASE_EPOCHS}.csv")
 
     # Prediction: Low Threshold
-    cfg = get_cfg(CONFIG_PATH_LOW_THR, RUN_NAME, EPOCHS)
+    cfg = get_cfg(CONFIG_PATH_LOW_THR, EPOCHS)
 
     model = build_detector(cfg.model)
     checkpoint = load_checkpoint(model, checkpoint_path, map_location='cpu')

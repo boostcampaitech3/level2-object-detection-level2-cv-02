@@ -12,7 +12,7 @@ from mmcv.parallel import MMDataParallel
 
 import argparse
 
-from options import RUN_NAME, CONFIG_PATH, CONFIG_PATH_LOW_THR
+from options import CONFIG_PATH, CONFIG_PATH_LOW_THR
 from options import get_cfg, make_predictions
 
 
@@ -24,9 +24,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.thr_down == 'True':
-        cfg = get_cfg(CONFIG_PATH_LOW_THR, RUN_NAME, args.epoch)
+        cfg = get_cfg(CONFIG_PATH_LOW_THR, args.epoch)
     elif args.thr_down == 'False':
-        cfg = get_cfg(CONFIG_PATH, RUN_NAME, args.epoch)
+        cfg = get_cfg(CONFIG_PATH, args.epoch)
     else:
         raise AssertionError('You should give either True or False for thr_down argument.')
 

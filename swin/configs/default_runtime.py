@@ -8,7 +8,6 @@ log_config = dict(
         dict(type='TextLoggerHook'),
         dict(type='WandbLoggerHook',
             interval=100,
-            init_kwargs=dict(project='trash_detection_nestiank', entity='bucket_interior'),
             log_artifact=False
         )
     ])

@@ -9,14 +9,25 @@ from mmcv import Config
 from pycocotools.coco import COCO
 import pandas as pd
 
-RUN_NAME = 'SwinTransformerBase'
+import wandb
+
+
+WANDB_PROJECT = None
+WANDB_ENTITY = None
+WANDB_RUN = None
+
 CONFIG_PATH = '/opt/ml/detection/swin/configs/modified_swin_base.py'
 CONFIG_PATH_LOW_THR = '/opt/ml/detection/swin/configs/thr_down/modified_swin_base_thr_down.py'
 
 
-def get_cfg(loc: str, run: str, epochs: int):
+def wandb_init() -> None:
+    wandb.init(project=WANDB_PROJECT, entity=WANDB_ENTITY, name=WANDB_RUN)
+
+def get_cfg(loc: str, epochs: int):
     cfg = Config.fromfile(loc)
-    cfg.log_config.hooks[1].init_kwargs.name = run
+    cfg.log_config.hooks[1].init_kwargs.project = WANDB_PROJECT
+    cfg.log_config.hooks[1].init_kwargs.entity = WANDB_ENTITY
+    cfg.log_config.hooks[1].init_kwargs.name = WANDB_RUN
     cfg.runner.max_epochs = epochs
     return cfg
 
