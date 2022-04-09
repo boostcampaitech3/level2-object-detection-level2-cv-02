@@ -18,8 +18,8 @@ from options import get_cfg, make_predictions
 
 if __name__ == '__main__':
     # Init
-    BASE_EPOCHS = 42
-    EPOCHS = 80 - 42
+    BASE_EPOCHS = 0
+    EPOCHS = 42 - BASE_EPOCHS
 
     assert BASE_EPOCHS > EPOCHS, "The original checkpoint will be overwritten."
 

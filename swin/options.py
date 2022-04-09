@@ -9,9 +9,9 @@ from mmcv import Config
 from pycocotools.coco import COCO
 import pandas as pd
 
-RUN_NAME = 'Swin_HeavyAugs2_Epochs42_60'
-CONFIG_PATH = '/opt/ml/detection/swin/configs/heavy_augs/modified_swin_base_heavy_augs.py'
-CONFIG_PATH_LOW_THR = '/opt/ml/detection/swin/configs/thr_down/modified_swin_base_heavy_augs_thr_down.py'
+RUN_NAME = 'SwinTransformerBase'
+CONFIG_PATH = '/opt/ml/detection/swin/configs/modified_swin_base.py'
+CONFIG_PATH_LOW_THR = '/opt/ml/detection/swin/configs/thr_down/modified_swin_base_thr_down.py'
 
 
 def get_cfg(loc: str, run: str, epochs: int):
