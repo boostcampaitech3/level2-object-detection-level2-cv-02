@@ -21,8 +21,6 @@ EPOCHS = 42 - BASE_EPOCHS
 
 if __name__ == '__main__':
     # Init
-    assert BASE_EPOCHS > EPOCHS, "The original checkpoint will be overwritten."
-
     wandb_init()
 
     cfg = get_cfg(CONFIG_PATH, EPOCHS)
@@ -33,6 +31,7 @@ if __name__ == '__main__':
         model.init_weights()
     else:
         # Learning from the checkpoint
+        assert BASE_EPOCHS > EPOCHS, "The original checkpoint will be overwritten."
         assert BASE_EPOCHS > cfg.lr_config.step[1], "Learning rate should be considered carefully."
         cfg.optimizer.lr = 1e-6
         cfg.lr_config = None
