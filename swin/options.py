@@ -23,6 +23,7 @@ CONFIG_PATH_LOW_THR = '/opt/ml/detection/swin/configs/thr_down/modified_swin_bas
 def wandb_init() -> None:
     wandb.init(project=WANDB_PROJECT, entity=WANDB_ENTITY, name=WANDB_RUN)
 
+
 def get_cfg(loc: str, epochs: int):
     cfg = Config.fromfile(loc)
     cfg.log_config.hooks[1].init_kwargs.project = WANDB_PROJECT
