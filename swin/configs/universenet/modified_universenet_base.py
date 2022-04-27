@@ -5,7 +5,7 @@ pretrained = 'https://github.com/shinya7y/UniverseNet/releases/download/20.07/un
 
 _base_ = [
     '/opt/ml/detection/swin/configs/universenet/universenet101_gfl.py',
-    '/opt/ml/detection/swin/configs/universenet/dataset_mstrain_480_960.py',
+    '/opt/ml/detection/swin/configs/universenet/coco_simillar_dataset.py',
     '/opt/ml/detection/swin/configs/default_runtime.py',
     '/opt/ml/detection/swin/configs/universenet/schedule_1x.py'
 ]
