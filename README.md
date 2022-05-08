@@ -21,7 +21,7 @@
 
 #### Image Dataset Specifications
 
-  * Dataset ratio
+  * **Dataset ratio**
     * Train & validation dataset: 50.06%
     * Test dataset for public leaderboard: 24.97%
     * Test dataset for private leaderboard: 49.94%
@@ -30,17 +30,17 @@
 
 #### Main Difficulties
 
-  * Data imbalance
+  * **Data imbalance**
     * 일부 유형의 쓰레기 사진의 비율이 유의미하게 낮았음
-  * Bounding box noise
+  * **Bounding box noise**
     * 많은 쓰레기 사진의 쓰레기 영역 annotation이 정확하지 않았음
-  * Tiny objects
+  * **Tiny objects**
     * 대부분의 쓰레기 사진에 등장하는 쓰레기의 크기가 매우 작았음
     * 매우 많은 숫자의 매우 작은 쓰레기가 등장하는 사진이 유의미하게 많았음
 
 ### Approaches
 
-  * Selecting models
+  * **Selecting models**
     * 코드가 공개되어 있는 SOTA 모델부터 순서대로 실험에 사용
     * Ensemble 과정에서의 다양성을 위해 여러 모델을 실험에 사용
       * Swin Transformer(Swin-B)
@@ -49,7 +49,7 @@
       * EfficientDet(b3, b5, b7)
       * RetinaNet
       * Faster R-CNN
-  * Dealing with tiny objects
+  * **Dealing with tiny objects**
     * 다양한 heavy augmentation을 실험에 사용
       * RandomCrop
       * RandomFlip
@@ -57,12 +57,12 @@
       * RandomFog
       * Corrupt: Gaussian Noise
       * CutOut
-  * Increasing generalization performance
+  * **Increasing generalization performance**
     * 다양한 learning rate를 실험에 사용
       * 시작: 1e-2, 5e-3, 1e-3, 5e-4, 1e-4
       * 관리: fixed, cosine annealing, step decay
     * 다양한 optimizer를 실험에 사용: SGD, Adam, AdamW
-  * Score-related tweaks
+  * **Score-related tweaks**
     * Prediction with low thresholds
     * 다양한 ensemble 방법을 실험에 사용: NMS, Soft-NMS, WBF
 
@@ -70,10 +70,10 @@
 
 > 가장 높은 mAP score를 달성한 모델에 대해서만 기록
 
-  * Model: WBF ensemble
+  * **Model: WBF ensemble**
     * Swin-B
     * UniverseNet-101
-  * Train & validation dataset split rule
+  * **Train & validation dataset split rule**
     * 최종 답안은 validation dataset 없이 학습한 모델로 생성
 
 ### Thoughts
